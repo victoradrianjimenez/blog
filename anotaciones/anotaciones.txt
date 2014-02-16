@@ -1,0 +1,72 @@
+CODEIGNITER
+
+1.1- Descargar CI en la carpeta htdocs (o www en linux).
+1.2- Descargar traduccion al español desde: https://github.com/rasec/CodeIgniter-Spanish-Pack
+1.3- Importar directorio en el editor php (en mi caso Eclipse)
+
+SERVIDOR APACHE
+1.1- Crear un archivo .htaccess para quitar el "index.php" de la url.
+
+PLUGINS
+
+En caso de que tu sitio utilice login, recomiendo descargar el plugin "Ion_Auth" para CodeIgniter. 
+2.1- Descargar archivos desde aqui: http://benedmunds.com/code.html <- en el listado buscas "Ion Auth".
+2.2- Descomprimir los archivos dentro de la carpeta "application" de CI.
+
+FRAMEWORK FRONT-END
+
+Para el ejemplo vamos a usar Boostrap.
+3.1- Descargamos Boostrap desde su sitio web: http://getbootstrap.com/getting-started/#download
+3.2- Extraemos el contenido (carpetas js, css y fonts) dentro de nuestra carpeta del proyecto, junto con los archivos de CI.
+3.3- Descargamos jQuery para que funcionen los plugins de Bootstrap: http://code.jquery.com/jquery-2.1.0.min.js
+3.4- Guardamos el archivo descargado dentro de el directorio "js".
+
+BASE DE DATOS
+
+4.1- Creamos la base de datos en nuestro servidor (en nuestro caso es local).
+4.2- Importamos nuestro script SQL, o aplicamos ingenieria directa de nuestro diagrama en Workbench.
+NOTA: tener en cuenta en este paso que el plugin "Ion_Auth" tiene su propio código SQL, el cual tenemos que usar. El mismo esta dentro del directorio "aplication/sql/ion_auth.sql"
+4.3- Si es necesario, ejecutar el script con datos iniciales (por ejemplo, datos de loguin para el administrador).
+
+CONFIGURAR CI Y PLUGINS
+
+5.1- Archivo $CI$/application/config/config.php
+$config['base_url']	= 'http://localhost/blog/';
+$config['language']	= 'spanish';
+$config['encryption_key'] = '28e2k6W15f3T373f253o9476e84a31Z1'; //PONELE CUALQUIER VALOR CON MAS DE 10 CARACTERES AL AZAR (recomiendo como minimo usar 32)
+$config['index_page'] = ''; //dejar en blanco si se va a usar htaccess
+
+5.2- Archivo $CI$/application/config/database.php
+$db['default']['hostname'] = 'localhost';
+$db['default']['username'] = 'root';
+$db['default']['password'] = '123456';
+$db['default']['database'] = 'blog';
+$db['default']['dbdriver'] = 'mysqli'; //importante para poder usar stored procedures
+
+5.3- Archivo $CI$/application/config/ion_auth.php
+
+$config['site_title']                 = "Mi blog";	     // Titulo de tu sitio web
+$config['admin_email']                = "admin@admin.com";   // No se realmente para que se usa. Dejar asi.
+$config['default_group']              = 'miembros';          // Grupo por defecto.
+$config['admin_group']                = 'admin';             // Nombre del grupo de administradores (recomiendo dejarlo asi).
+$config['identity']                   = 'email';             // nombre de la columna de la base de datos que usara como nombre de usuario para loguearse
+$config['use_ci_email']               = TRUE;                //utiliza el plugin de CI para enviar emails, no el propio.
+$config['message_start_delimiter'] = ''; 	// Message start delimiter
+$config['message_end_delimiter']   = ''; 	// Message end delimiter
+$config['error_start_delimiter']   = '';	// Error mesage start delimiter
+$config['error_end_delimiter']     = '';	// Error mesage end delimiter
+
+Agregar esta linea al final del archivo:
+date_default_timezone_set('America/Argentina/Tucuman');
+
+NOTA: se puede personalizar muchas cosas en este archivo, como los nombres de las tablas en la base de datos, cantidad de caracteres de las contraseñas, etc.
+
+5.4- Archivo $CI$/application/config/routes.php
+$route['default_controller'] = "home"; //conntrolador por defecto que se usa cuando no dice el nombre en la URL. Por ejemplo http://localhost/ es equivalente a http://localhost/home.
+
+5.5- Archivo $CI$/application/config/autoload.php
+$autoload['libraries'] = array('database', 'session', 'ion_auth');
+$autoload['helper'] = array('url','db');
+
+
+

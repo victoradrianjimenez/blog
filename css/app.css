@@ -1,0 +1,21 @@
+/* Ajustar el footer a la pantalla */
+html, body{
+  height: 100%;
+}
+#wrapper{
+  min-height: 100%;
+  height: auto !important;
+  margin: 0 auto -60px;
+}
+footer {
+  height: 60px;
+  overflow: hidden;
+}
+#push {
+  height: 90px;
+}
+
+/* Mensajes de error en la nav */
+nav .alert{
+  margin-bottom:0;
+}
