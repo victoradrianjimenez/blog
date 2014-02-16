@@ -218,6 +218,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `baja_post`(
 	pidUsuario INT
 )
 BEGIN
+	DELETE FROM comentario
+	WHERE idPost = pidPost;
 	DELETE FROM post
 	WHERE idPost = pidPost AND idUsuario = pidUsuario;
 	SELECT '' AS mensaje;
@@ -330,3 +332,16 @@ END$$
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+INSERT INTO `groups` (`id`, `name`, `description`) VALUES
+     (1,'admin','Administrator'),
+     (2,'members','General User');
+
+INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `salt`, `email`, `activation_code`, `forgotten_password_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`) VALUES
+     ('1',0x7f000001,'administrator','59beecdf7fc966e2f17fd8f65a4a9aeb09d4a3d4','9462e8eee0','admin@admin.com','',NULL,'1268889823','1268889823','1', 'Admin','istrator');
+
+INSERT INTO `users_groups` (`id`, `user_id`, `group_id`) VALUES
+     (1,1,1),
+     (2,1,2);
+
+

@@ -19,3 +19,8 @@ footer {
 nav .alert{
   margin-bottom:0;
 }
+
+/* correccion del ancho de buscador (se ve mal en chrome) */
+#buscar{
+  width: 320px;
+}
