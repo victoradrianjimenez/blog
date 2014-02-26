@@ -32,13 +32,23 @@ class Posts extends CI_Controller {
     }
 	}
 	
-
-	public function listar(){
+  //el parametro $iniPagina es para la paginacion de la tabla de posts.
+	public function listar($iniPagina=0){
 	  $this->load->model('Post');
 	  $this->load->model('Gestor_posts');
-
+    $this->load->library('pagination');
+    //chequeo parámetros de entrada
+    $iniPagina = (int)$iniPagina; //que sea entero
+    
 	  $idUsuario = 1;
-    $lista = $this->Gestor_posts->listar_posts($idUsuario);
+    $lista = $this->Gestor_posts->listar_posts($idUsuario, $iniPagina, PER_PAGE); //el ultimo parametro es la cantidad de items que quiero
+    //PER_PAGE es una constante definida por mi en el archivo config/constants.php. Es por comodidad que la pongo ahi.
+    
+    //genero la lista de links de paginación
+    $this->pagination->initialize(array(
+      'base_url' => site_url('posts/listar'),                           //url del sitio donde hay items a listar
+      'total_rows' => $this->Gestor_posts->cantidad_posts($idUsuario),  //cantidad total de elementos en la base de datos
+    ));
     
     $datos_vista = array(
       'seccion_pagina' => 'posts',
@@ -47,6 +57,7 @@ class Posts extends CI_Controller {
       'mensaje' => $this->session->flashdata('mensaje'),
       'mensaje_tipo' => $this->session->flashdata('mensaje_tipo'),
       'usuario' => $this->ion_auth->user()->row(),
+      'paginacion' => $this->pagination->create_links(), //html generado por CI de la barra de paginación
     );
 		$this->load->view('post_listar', $datos_vista);
 	}
@@ -67,7 +78,7 @@ class Posts extends CI_Controller {
     //verificar datos
 		$this->form_validation->set_rules('titulo', 'Título', 'required|max_length[250]');
 		$this->form_validation->set_rules('contenido', 'Contenido', 'required');
-		$this->form_validation->set_rules('activo', 'Publicado', 'required');
+		$this->form_validation->set_rules('activo', 'Publicado', '');
 		
 		//si la validacion es true es porque el usuario ya envio el formulario, entonces doy de alta
 		if ($this->form_validation->run() == TRUE){
@@ -76,6 +87,7 @@ class Posts extends CI_Controller {
         $this->session->set_flashdata('mensaje', 'La operación se realizó con éxito.');
         $this->session->set_flashdata('mensaje_tipo', 'success');
         redirect('posts/listar');
+        return;
         //termina aqui
       }
       $mensaje_tipo = 'danger';

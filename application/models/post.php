@@ -13,7 +13,8 @@ class Post extends CI_Model{
   }
   
   function dameFecha(){
-    return strftime("%d/%m/%Y %l:%M %p", strtotime($this->fecha));
+    $fecha = strftime("%Y/%d/%m/", strtotime($this->fecha));
+    $hora =  strftime("%l:%M %p", strtotime($this->fecha));
   }
   
   //devuelve un array de objetos Comentario

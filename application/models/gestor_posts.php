@@ -1,20 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Gestor_posts extends CI_Model{
-	function liberar_resultado_consulta($query)
-  {
-    if (is_object($query->result_id))
-    {
-      mysqli_free_result($query->result_id);
-      $query->result_id = FALSE;
-      //las lineas siguientes son para multi query
-      do {
-        if ($r = mysqli_store_result($query->conn_id)){
-          mysqli_free_result($r);
-        }
-      }while (mysqli_next_result($query->conn_id));
-    }
-  }
 
 	//devuelve true o un mensaje de error
 	public function alta_post($idUsuario, $titulo, $contenido, $activo){
@@ -32,15 +18,29 @@ class Gestor_posts extends CI_Model{
 	}
   
   //devuelve un array de objetos Post
-  public function listar_posts($idUsuario){
-    $query = $this->db->query("call listar_posts($idUsuario)");
+  public function listar_posts($idUsuario, $pagina, $items_por_pagina){
+    $pagina = $this->db->escape((int)$pagina);$pagina = $this->db->escape((int)$pagina);
+    $items_por_pagina = $this->db->escape((int)$items_por_pagina);
+    $idUsuario = $this->db->escape((int)$idUsuario);
+    $query = $this->db->query("call listar_posts($idUsuario, $pagina, $items_por_pagina)");
     $data = $query->result('Post');
     liberar_resultado_consulta($query);
     return $data;
   }
-  
+
+  //devuelve un array de objetos Post
+  public function cantidad_posts($idUsuario){
+    $idUsuario = $this->db->escape((int)$idUsuario);
+    $query = $this->db->query("call cantidad_posts($idUsuario)");
+    $data = $query->row_array();
+    liberar_resultado_consulta($query);
+    return $data['cantidad'];
+  }
+    
   //devuelve un objeto Post o false en caso de error
   public function dame_post($id, $idUsuario){
+    $id = $this->db->escape((int)$id);
+    $idUsuario = $this->db->escape((int)$idUsuario);
     $query = $this->db->query("call dame_post($id, $idUsuario)");
     $data = $query->result('Post');
     liberar_resultado_consulta($query);

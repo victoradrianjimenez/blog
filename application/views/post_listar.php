@@ -44,6 +44,8 @@
       </tbody>
     </table>
     
+    <?php echo $paginacion?>
+    
     <div class="btn-toolbar">
       <div class="btn-group">
         <a class="btn btn-default" href="<?php echo site_url('posts/alta')?>">Nuevo post</a>

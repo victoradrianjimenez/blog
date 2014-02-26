@@ -292,20 +292,44 @@ BEGIN
 	ORDER BY fecha desc;
 END$$
 
--- -----------------------------------------------------
--- procedure listar_posts
--- -----------------------------------------------------
-DROP procedure IF EXISTS `listar_posts`;
-
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
 DELIMITER $$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `listar_posts`(
-	pidUsuario INT
+    pidUsuario INT UNSIGNED,
+	pPagina INT UNSIGNED,
+    pItemsXPagina INT UNSIGNED)
+BEGIN
+    SET @qry = '
+    SELECT  idPost, titulo, activo, fecha 
+    FROM post
+	WHERE idUsuario = ?
+    ORDER BY fecha DESC
+    LIMIT ?,?';
+    PREPARE stmt FROM  @qry;
+    SET @a = pidUsuario;
+    SET @b = pPagina;
+    SET @c = pItemsXPagina;
+    EXECUTE stmt USING @a, @b, @c;
+    DEALLOCATE PREPARE stmt;
+END$$
+
+-- --------------------------------------------------------------------------------
+-- Routine DDL
+-- Note: comments before and after the routine body will not be stored by the server
+-- --------------------------------------------------------------------------------
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `cantidad_posts`(
+    pidUsuario INT UNSIGNED
 )
 BEGIN
-	SELECT idPost, titulo, activo, fecha 
+	SELECT COUNT(*) as 'cantidad'
 	FROM post
-	WHERE idUsuario = pidUsuario
-	ORDER BY fecha desc;
+	WHERE idUsuario = pidUsuario;
 END$$
 
 -- -----------------------------------------------------
